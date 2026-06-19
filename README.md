@@ -1,142 +1,24 @@
-Postman Collection Structure
+# 🚀 Job Tracker API
 
-Job Tracker API
-│
-├── Auth
-│   ├── Signup
-│   └── Login
-│
-├── Jobs
-│   ├── Create Job
-│   ├── Get All Jobs
-│   ├── Search Jobs
-│   ├── Get Job By Id
-│   ├── Update Job
-│   └── Delete Job
-│
-├── Applications
-│   ├── Create Application
-│   ├── Get All Applications
-│   ├── Get Application By Id
-│   ├── Filter By Status
-│   ├── Search Application
-│   ├── Update Application
-│   └── Delete Application
-│
-└── Reports
-    └── Dashboard Report
+A RESTful Job Tracker API built using **Node.js**, **Express.js**, **MySQL**, **JWT Authentication**, and **Layered Architecture**.
 
-Final Routes Summary
+This application allows employers to post jobs, employees to apply for jobs, employers to review applications, and both users to track application progress through a dashboard.
 
-POST   /api/auth/signup
-POST   /api/auth/login
+---
 
-GET    /api/jobs
-GET    /api/jobs/:id
-GET    /api/jobs?search=Google
-POST   /api/jobs
-PATCH  /api/jobs/:id
-DELETE /api/jobs/:id
+# 📌 Features
 
-GET    /api/applications
-GET    /api/applications/:id
-GET    /api/applications?status=Applied
-GET    /api/applications?search=Google
-POST   /api/applications
-PATCH  /api/applications/:id
-DELETE /api/applications/:id
-
-GET    /api/reports/dashboard
-
-Recommended Testing Order
-
-1. Signup Employer
-2. Login Employer
-3. Create Job
-4. Get All Jobs
-
-5. Signup Employee
-6. Login Employee
-7. Search Job
-8. Apply Job
-
-9. Get All Applications
-10. Update Application Status
-11. Filter Applications
-12. Dashboard Report
-
-
-APIs required for:
-
-Employee signup/login
-Employer signup/login
-Job posting and management
-Job application tracking
-Application status updates
-Dashboard reporting
-
-
-job-tracker/
-│
-├── src/
-│   ├── config/
-│   │   └── db.js
-|   |   └── config.js
-│   │
-│   ├── controllers/
-│   │   ├── auth.controller.js
-│   │   ├── job.controller.js
-│   │   ├── application.controller.js
-│   │   └── report.controller.js
-│   │
-|   ├── middlewares/
-│   │   ├── auth.middleware.js
-│   │   └── role.middleware.js
-|   |
-│   ├── repositories/
-│   │   ├── auth.repository.js
-│   │   ├── job.repository.js
-│   │   ├── application.repository.js
-│   │   └── report.repository.js
-|   |
-|   ├── routes/
-│   │   ├── auth.routes.js
-│   │   ├── job.routes.js
-│   │   ├── application.routes.js
-│   │   └── report.routes.js
-|   |
-│   ├── services/
-│   │   ├── auth.service.js
-│   │   ├── job.service.js
-│   │   ├── application.service.js
-│   │   └── report.service.js
-│   │
-│   ├── utils/
-│   │   └── jwt.js
-│   │
-│   └── app.js
-│
-├── .env
-├── package.json
-└── server.js
-
-
-# Job Tracker API
-
-A RESTful Job Tracker API built with Node.js, Express.js, MySQL, JWT Authentication, and Layered Architecture.
-
-## Features
-
-### Authentication
+## Authentication
 
 * Employee Signup
 * Employee Login
 * Employer Signup
 * Employer Login
 * JWT Authentication
+* Password Hashing using bcryptjs
 * Role-Based Authorization
 
-### Job Management
+## Job Management
 
 * Create Job
 * Get All Jobs
@@ -145,7 +27,7 @@ A RESTful Job Tracker API built with Node.js, Express.js, MySQL, JWT Authenticat
 * Update Job
 * Delete Job
 
-### Application Management
+## Application Management
 
 * Apply for Job
 * Get All Applications
@@ -155,29 +37,30 @@ A RESTful Job Tracker API built with Node.js, Express.js, MySQL, JWT Authenticat
 * Update Application Status
 * Delete Application
 
-### Dashboard Reporting
+## Dashboard Reporting
 
 * Total Applications
-* Applied Count
-* Interviewing Count
-* Offer Count
-* Rejected Count
+* Applied Applications
+* Interviewing Applications
+* Offered Applications
+* Rejected Applications
 
 ---
 
-## Tech Stack
+# 🛠️ Tech Stack
 
 * Node.js
 * Express.js
 * MySQL
-* JWT
+* JWT Authentication
 * bcryptjs
 * dotenv
+* REST API
 * Layered Architecture
 
 ---
 
-## Project Structure
+# 📂 Project Structure
 
 ```text
 job-tracker/
@@ -227,15 +110,15 @@ job-tracker/
 
 ---
 
-## Database Schema
+# 🗄️ Database Schema
 
-### Users Table
+## Users Table
 
 ```sql
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('employee','employer') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -244,7 +127,7 @@ CREATE TABLE users (
 );
 ```
 
-### Jobs Table
+## Jobs Table
 
 ```sql
 CREATE TABLE jobs (
@@ -253,35 +136,48 @@ CREATE TABLE jobs (
     company_name VARCHAR(255) NOT NULL,
     job_title VARCHAR(255) NOT NULL,
     job_description TEXT NOT NULL,
-    job_type ENUM('Internship','Full-time','Part-time') NOT NULL,
+    job_type ENUM(
+        'Internship',
+        'Full-time',
+        'Part-time'
+    ) NOT NULL,
     location VARCHAR(255),
     salary VARCHAR(100),
     deadline DATE,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP,
+
     FOREIGN KEY (employer_id)
     REFERENCES users(id)
     ON DELETE CASCADE
 );
 ```
 
-### Applications Table
+## Applications Table
 
 ```sql
 CREATE TABLE applications (
     id INT AUTO_INCREMENT PRIMARY KEY,
+
     employee_id INT NOT NULL,
+
     job_id INT NOT NULL,
+
     status ENUM(
         'Applied',
         'Interviewing',
         'Offer',
         'Rejected'
     ) DEFAULT 'Applied',
+
     applied_date DATE NOT NULL,
+
     notes TEXT,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ON UPDATE CURRENT_TIMESTAMP,
 
@@ -297,24 +193,22 @@ CREATE TABLE applications (
 
 ---
 
-## Installation
+# ⚙️ Installation
 
-### Clone Repository
+## Clone Repository
 
 ```bash
 git clone <repository-url>
 cd job-tracker
 ```
 
-### Install Dependencies
+## Install Dependencies
 
 ```bash
 npm install
 ```
 
-### Configure Environment Variables
-
-Create a `.env` file:
+## Create .env File
 
 ```env
 PORT=5000
@@ -327,13 +221,13 @@ DB_NAME=job_tracker
 JWT_SECRET=your_secret_key
 ```
 
-### Start Server
+## Run Application
 
 ```bash
 npm run dev
 ```
 
-Server:
+Server URL:
 
 ```text
 http://localhost:5000
@@ -341,9 +235,41 @@ http://localhost:5000
 
 ---
 
-## API Endpoints
+# 📬 Postman Collection Structure
 
-### Auth
+```text
+Job Tracker API
+│
+├── Auth
+│   ├── Signup
+│   └── Login
+│
+├── Jobs
+│   ├── Create Job
+│   ├── Get All Jobs
+│   ├── Search Jobs
+│   ├── Get Job By Id
+│   ├── Update Job
+│   └── Delete Job
+│
+├── Applications
+│   ├── Create Application
+│   ├── Get All Applications
+│   ├── Get Application By Id
+│   ├── Filter By Status
+│   ├── Search Application
+│   ├── Update Application
+│   └── Delete Application
+│
+└── Reports
+    └── Dashboard Report
+```
+
+---
+
+# 🔗 API Endpoints
+
+## Authentication
 
 | Method | Endpoint         |
 | ------ | ---------------- |
@@ -352,7 +278,7 @@ http://localhost:5000
 
 ---
 
-### Jobs
+## Jobs
 
 | Method | Endpoint                |
 | ------ | ----------------------- |
@@ -365,7 +291,7 @@ http://localhost:5000
 
 ---
 
-### Applications
+## Applications
 
 | Method | Endpoint                         |
 | ------ | -------------------------------- |
@@ -379,7 +305,7 @@ http://localhost:5000
 
 ---
 
-### Reports
+## Reports
 
 | Method | Endpoint               |
 | ------ | ---------------------- |
@@ -387,29 +313,7 @@ http://localhost:5000
 
 ---
 
-## Business Rules
-
-### Employee
-
-* Signup/Login
-* View Jobs
-* Search Jobs
-* Apply for Jobs
-* Track Applications
-* Delete Own Applications
-
-### Employer
-
-* Signup/Login
-* Create Jobs
-* Update Own Jobs
-* Delete Own Jobs
-* Review Applications
-* Update Application Status
-
----
-
-## Application Workflow
+# 🔄 Application Workflow
 
 ```text
 Employer
@@ -437,36 +341,87 @@ Offer / Rejected
 
 ---
 
-## Authorization Rules
+# 🔐 Authorization Rules
 
-| Action                    | Employee | Employer |
-| ------------------------- | -------- | -------- |
-| Signup/Login              | ✅        | ✅        |
-| View Jobs                 | ✅        | ✅        |
-| Create Job                | ❌        | ✅        |
-| Update Job                | ❌        | ✅        |
-| Delete Job                | ❌        | ✅        |
-| Apply Job                 | ✅        | ❌        |
-| Delete Own Application    | ✅        | ❌        |
-| Update Application Status | ❌        | ✅        |
-| Dashboard Report          | ✅        | ✅        |
+| Action                    | Employee | Employer               |
+| ------------------------- | -------- | ---------------------- |
+| Signup/Login              | ✅        | ✅                      |
+| View Jobs                 | ✅        | ✅                      |
+| Create Job                | ❌        | ✅                      |
+| Update Job                | ❌        | ✅ Own Job              |
+| Delete Job                | ❌        | ✅ Own Job              |
+| Apply Job                 | ✅        | ❌                      |
+| Delete Own Application    | ✅        | ❌                      |
+| Update Application Status | ❌        | ✅ Own Job Applications |
+| Dashboard Report          | ✅        | ✅                      |
 
 ---
 
-## Author
+# 🧪 Recommended Testing Order
 
-Nirajan Lama
+### Employer Flow
+
+1. Signup Employer
+2. Login Employer
+3. Create Job
+4. Get All Jobs
+5. Update Job
+
+### Employee Flow
+
+6. Signup Employee
+7. Login Employee
+8. Search Jobs
+9. Get Job By ID
+10. Apply Job
+11. Get All Applications
+12. Delete Own Application
+
+### Employer Review Flow
+
+13. Login Employer
+14. Update Application Status
+15. Filter Applications
+16. Dashboard Report
+
+---
+
+# 📈 Business Flow
+
+```text
+Employer → Post Job
+         ↓
+Employee → View Job
+         ↓
+Employee → Apply Job
+         ↓
+Application Created
+         ↓
+Employer Reviews
+         ↓
+Interviewing
+         ↓
+Offer / Rejected
+```
+
+---
+
+# 👨‍💻 Author
+
+**Nirajan Lama**
 
 Backend Developer
 
-Skills:
+### Skills
 
+* HTML
+* CSS
+* JavaScript
 * Node.js
 * Express.js
 * MySQL
 * MongoDB
-* REST API
+* REST API Development
 * JWT Authentication
 * Git & GitHub
 * Layered Architecture
-
