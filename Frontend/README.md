@@ -253,6 +253,3 @@ GitHub: https://github.com/nirajanlama2620
 
 ---
 
-## License
-
-This project is developed for educational and internship assessment purposes.
