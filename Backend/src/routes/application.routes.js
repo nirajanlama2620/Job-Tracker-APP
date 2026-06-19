@@ -7,6 +7,7 @@ import roleMiddleware from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
+
 router.get( "/", authMiddleware, controller.getApplications );  // ✅
 
 router.get( "/:id", authMiddleware, controller.getApplicationById );  // ✅

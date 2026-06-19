@@ -12,10 +12,28 @@ export const getJobById = (id) => {
   return repository.findJobById(id);
 };
 
-export const updateJob = ( id, data ) => {
-  return repository.updateJob( id, data );
+export const getMyJobs = (employerId) => {
+  return repository.findJobsByEmployerId(employerId);
 };
 
-export const deleteJob = (id) => {
-  return repository.deleteJob(id);
+export const updateMyJob = (
+  jobId,
+  employerId,
+  data
+) => {
+  return repository.updateJobByEmployer(
+    jobId,
+    employerId,
+    data
+  );
+};
+
+export const deleteMyJob = (
+  jobId,
+  employerId
+) => {
+  return repository.deleteJobByEmployer(
+    jobId,
+    employerId
+  );
 };

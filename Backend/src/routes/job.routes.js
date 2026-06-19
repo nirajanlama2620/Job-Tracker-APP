@@ -9,6 +9,13 @@ const router = express.Router();
 
 router.get( "/", controller.getAllJobs ); // ✅
 
+/*
+|--------------------------------------------------------------------------
+| Employer Dashboard
+|--------------------------------------------------------------------------
+*/
+router.get(  "/my-jobs",  authMiddleware,  roleMiddleware("employer"),  controller.getMyJobs);
+
 router.get( "/:id", controller.getJobById ); // ✅
 
 router.post( "/", authMiddleware, roleMiddleware("employer"), controller.createJob );  // ✅

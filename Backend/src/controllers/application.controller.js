@@ -1,5 +1,6 @@
 import * as service from "../services/application.service.js";
 
+
 export const getApplications = async (req, res) => {
   try {
     const { status, search, } = req.query;
